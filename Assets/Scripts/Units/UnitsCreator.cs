@@ -18,6 +18,8 @@ struct UnitLineup {
 
 public class UnitsCreator : MonoBehaviour
 {
+    public static UnitsCreator instance = null;
+
     [Header("Components")]
     public UnitManager[] prefabs;
 
@@ -35,6 +37,11 @@ public class UnitsCreator : MonoBehaviour
 
     void Awake()
     {
+        if(instance == null) 
+            instance = this;
+        else if(instance != this)
+            Destroy(gameObject);
+
         GenerateUnits();
     }
 

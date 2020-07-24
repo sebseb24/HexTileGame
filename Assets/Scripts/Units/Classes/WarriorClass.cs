@@ -13,7 +13,7 @@ public class WarriorClass : IUnitClasses
                     if(target) {
                         Debug.Log("The warrior is doing skill 1");
                         source.PlayTargetAnimation("WarriorSwordAttack");
-                        source.AttackTarget(target, apCost[skill-1]);
+                        source.AttackTarget(target, apCost[skill-1], 20);
                         UI.instance.UpdateActionPointsText(source.actionPoints);    
                     }    
                 break;
@@ -22,9 +22,7 @@ public class WarriorClass : IUnitClasses
                     if(target) {
                         Debug.Log("The warrior is doing skill 2");
                         source.PlayTargetAnimation("WarriorBoostDamage");
-                        target.BoostDamage(5);
-
-                        source.actionPoints -= apCost[skill-1];
+                        target.BoostDamage(50, apCost[skill-1]);
                         UI.instance.UpdateActionPointsText(source.actionPoints); 
                     }      
                 break;

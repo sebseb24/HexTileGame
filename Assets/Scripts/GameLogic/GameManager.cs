@@ -54,4 +54,8 @@ public class GameManager : MonoBehaviour
         }
         return null;
     }
+
+    public void KillPlayer(UnitManager unit) {
+        //Destroy(unit)
+    }
 }

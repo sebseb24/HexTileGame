@@ -13,7 +13,7 @@ public class EnemyMinionClass : IUnitClasses
                     if(target) {
                         Debug.Log("The enemy is doing skill 1");
                         source.PlayTargetAnimation("StabAttack");
-                        source.AttackTarget(target, apCost[skill-1]);
+                        source.AttackTarget(target, apCost[skill-1], 20);
  
                         UI.instance.UpdateActionPointsText(source.actionPoints);    
                     }    

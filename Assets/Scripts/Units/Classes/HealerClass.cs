@@ -12,17 +12,16 @@ public class HealerClass : IUnitClasses
                 case 1:
                     if(target) {
                         Debug.Log("The healer is doing skill 1 (Range Attack)");
-                        target.TakeDamage(source.attackDamage);
+                        source.AttackTarget(target, apCost[skill-1], 10);
 
-                        source.actionPoints -= apCost[skill-1];
-                        UI.instance.UpdateActionPointsText(source.actionPoints);    
+                        UI.instance.UpdateActionPointsText(source.actionPoints);
                     }    
                 break;
 
                 case 2:
                     if(target) {
                         Debug.Log("The healer is doing skill 2 (Heal)");
-                        target.Heal(source.healValue);
+                        target.Heal(source.healValue, 10);
 
                         source.actionPoints -= apCost[skill-1];
                         UI.instance.UpdateActionPointsText(source.actionPoints); 

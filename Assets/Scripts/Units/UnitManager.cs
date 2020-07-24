@@ -13,14 +13,15 @@ public class UnitManager : MonoBehaviour
     public int maxActionPoints = 6;
     public int actionPoints;
     public int curHp;
-    public int maxHp = 50;
-    public int attackDamage = 10;
+    public int maxHp = 90;
+    public int baseAttackDamage = 10;
     public int healValue = 15;
 
     public int posX;
     public int posY;
 
     public bool isMoving = false;
+    int mpUsed = 0;
 
     List<Node> currentPath = null;
 
@@ -57,6 +58,7 @@ public class UnitManager : MonoBehaviour
     public void InitializeTurn() {
         movementPoints = maxMovementPoints;
         actionPoints = maxActionPoints;
+        mpUsed = 0;
 
         UI.instance.UpdateMovementPointsText(movementPoints);
         UI.instance.UpdateActionPointsText(actionPoints);
@@ -87,6 +89,7 @@ public class UnitManager : MonoBehaviour
 
             if(currentPath.Count > 0) {
                 // Change to next destination
+                mpUsed++;
                 destination = Map.instance.TileCoordToWorldCoord(currentPath[0].x, currentPath[0].y);
             }
 
@@ -104,24 +107,27 @@ public class UnitManager : MonoBehaviour
         unitClass.CastSkill(this, target, GameManager.instance.activeSkill, tile);                     
     }
 
-    public void AttackTarget(UnitManager target, int apCost) {
+    public void AttackTarget(UnitManager target, int apCost, int diceRoll) {
         Vector3 dir = Map.instance.TileCoordToWorldCoord(target.posX, target.posY) - transform.position;
         transform.forward = dir;
 
-        target.TakeDamage(attackDamage);
+        int damage = baseAttackDamage + Random.Range(1, diceRoll);
+        target.TakeDamage(damage);
 
         actionPoints -= apCost;
     }
 
     public void TakeDamage(int damage) {
         animatorHandler.PlayTargetAnimation("TakeDamage");
+        UI.instance.SpawnPopupText(transform.position, damage, PopupType.Damage, "-");
         curHp -= damage;
         if(curHp <= 0)
             Die();
     }
 
-    public void BoostDamage(int value) {
-        attackDamage += value;
+    public void BoostDamage(int value, int apCost) {
+        baseAttackDamage += Mathf.RoundToInt(baseAttackDamage * ((float)value/100));
+        actionPoints -= apCost;
     }
 
     public void ChangePosition(Tile tile) {
@@ -130,19 +136,26 @@ public class UnitManager : MonoBehaviour
         transform.position = Map.instance.TileCoordToWorldCoord(tile.x, tile.y);
     }
 
-    public void Heal(int value) {
-        curHp += value;
-
-        if(curHp > maxHp)
+    public void Heal(int value, int diceRoll) {
+        int heal = value + Random.Range(1, diceRoll);
+        curHp += heal;
+        if(curHp >= maxHp) {
+            heal -= (curHp - maxHp);
             curHp = maxHp;
+        }
+            
+        UI.instance.SpawnPopupText(transform.position, heal, PopupType.Heal, "+");
     }
 
     public void BoostAP(int value) {
+        UI.instance.SpawnPopupText(transform.position, value, PopupType.AP, "+");
+        maxActionPoints += value;
         actionPoints += value;
     }
 
     public void Die() {
         Debug.Log("This unit is dead");
+        GameManager.instance.KillPlayer(this);
     }
 
     public void PlayTargetAnimation(string anim) {

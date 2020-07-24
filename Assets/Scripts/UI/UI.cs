@@ -12,6 +12,7 @@ public class UI : MonoBehaviour
     [Header("Components")]
     public TextMeshProUGUI actionPointsText;
     public TextMeshProUGUI movementPointsText;
+    public GameObject popupPrefab;
 
     private void Awake() {
         if(instance == null) 
@@ -48,5 +49,11 @@ public class UI : MonoBehaviour
         else {
             GameManager.instance.activeSkill = 0;
         }
+    }
+
+    public void SpawnPopupText(Vector3 position, int value, PopupType type, string op) {
+        GameObject popupTransform = Instantiate(popupPrefab, position, Quaternion.identity);
+        PopupMessage popup = popupTransform.GetComponent<PopupMessage>();
+        popup.Setup(value, type, op);
     }
 }
