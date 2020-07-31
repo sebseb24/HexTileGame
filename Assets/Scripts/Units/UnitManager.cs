@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class UnitManager : MonoBehaviour
 {
+    bool isPlayable = true;
+
     Vector3 destination = Vector3.zero;
     float speed = 4;
 
@@ -49,10 +51,15 @@ public class UnitManager : MonoBehaviour
         return unitClass;
     }
 
-    public void InitializeUnit(IUnitClasses unitClass, int posX, int posY) {
+    public bool IsPlayable() {
+        return isPlayable;
+    }
+
+    public void InitializeUnit(IUnitClasses unitClass, int posX, int posY, bool isPlayable) {
         this.unitClass = unitClass;
         this.posX = posX;
         this.posY = posY;
+        this.isPlayable = isPlayable;
     }
 
     public void InitializeTurn() {
@@ -104,7 +111,7 @@ public class UnitManager : MonoBehaviour
 
     public void InteractOnTile(Tile tile) {
         UnitManager target = GameManager.instance.UnitOnTile(tile);
-        unitClass.CastSkill(this, target, GameManager.instance.activeSkill, tile);                     
+        unitClass.CastSkill(this, target, GameManager.instance.activeSkill, tile);                
     }
 
     public void AttackTarget(UnitManager target, int apCost, int diceRoll) {
@@ -112,15 +119,21 @@ public class UnitManager : MonoBehaviour
         transform.forward = dir;
 
         int damage = baseAttackDamage + Random.Range(1, diceRoll);
-        target.TakeDamage(damage);
-
         actionPoints -= apCost;
+        StartCoroutine(target.TakeDamage(damage));
+        //target.TakeDamage(damage);
+
+        
     }
 
-    public void TakeDamage(int damage) {
+    public IEnumerator TakeDamage(int damage) {
+        yield return null;
         animatorHandler.PlayTargetAnimation("TakeDamage");
         UI.instance.SpawnPopupText(transform.position, damage, PopupType.Damage, "-");
+        
         curHp -= damage;
+        UI.instance.UpdateHpBar(GameManager.instance.GetUnitId(this), (float)curHp / maxHp);
+
         if(curHp <= 0)
             Die();
     }
@@ -143,7 +156,8 @@ public class UnitManager : MonoBehaviour
             heal -= (curHp - maxHp);
             curHp = maxHp;
         }
-            
+
+        UI.instance.UpdateHpBar(GameManager.instance.GetUnitId(this), (float)curHp / maxHp);
         UI.instance.SpawnPopupText(transform.position, heal, PopupType.Heal, "+");
     }
 

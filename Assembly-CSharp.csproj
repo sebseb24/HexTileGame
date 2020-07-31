@@ -44,6 +44,7 @@
      <Compile Include="Assets\Scripts\Map\Tile.cs" />
      <Compile Include="Assets\Scripts\UI\PopupMessage.cs" />
      <Compile Include="Assets\Scripts\UI\UI.cs" />
+     <Compile Include="Assets\Scripts\Units\AI\EnemyAI.cs" />
      <Compile Include="Assets\Scripts\Units\Classes\EnemyMinionClass.cs" />
      <Compile Include="Assets\Scripts\Units\Classes\HealerClass.cs" />
      <Compile Include="Assets\Scripts\Units\Classes\HunterClass.cs" />

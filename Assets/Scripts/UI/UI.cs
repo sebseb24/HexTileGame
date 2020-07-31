@@ -14,6 +14,12 @@ public class UI : MonoBehaviour
     public TextMeshProUGUI movementPointsText;
     public GameObject popupPrefab;
 
+    public Image iconPrefab;
+    public GameObject iconListParent;
+    public Image activeIconBorder;
+    public List<Image> iconList  = new List<Image>();
+    public GameObject[] hpBarList;
+
     private void Awake() {
         if(instance == null) 
             instance = this;
@@ -23,6 +29,17 @@ public class UI : MonoBehaviour
 
     void Start() {
         GameManager.instance.GetActiveUnit().GetComponent<UnitManager>().InitializeTurn();
+    }
+
+    public void CreateIcon(int cnt, Sprite sprite) {
+        Image icon = Instantiate(iconPrefab, iconListParent.transform, false);
+        icon.transform.position += new Vector3(0, -3-(61*cnt), 0);
+        icon.sprite = sprite;
+        iconList.Add(icon);
+    }
+
+    public void InitializeHealthBars() {
+        hpBarList = GameObject.FindGameObjectsWithTag("HpBar");
     }
 
     public void onEndTurnButtonClicked() {
@@ -55,5 +72,13 @@ public class UI : MonoBehaviour
         GameObject popupTransform = Instantiate(popupPrefab, position, Quaternion.identity);
         PopupMessage popup = popupTransform.GetComponent<PopupMessage>();
         popup.Setup(value, type, op);
+    }
+
+    public void UpdateIconList() {
+        activeIconBorder.transform.position = iconList[GameManager.instance.activeUnit].transform.position - new Vector3(0, 25, 0);
+    }
+
+    public void UpdateHpBar(int unit, float fillAmount) {
+        hpBarList[unit].GetComponent<Slider>().value = fillAmount;
     }
 }

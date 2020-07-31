@@ -520,6 +520,7 @@ GameObject:
   - component: {fileID: 2249939751594170829}
   - component: {fileID: 8548390160172623876}
   - component: {fileID: 1632503084422808973}
+  - component: {fileID: 3222516403796345502}
   m_Layer: 0
   m_Name: MetalonGreen
   m_TagString: Untagged
@@ -596,7 +597,7 @@ MonoBehaviour:
   actionPoints: 0
   curHp: 0
   maxHp: 50
-  attackDamage: 10
+  baseAttackDamage: 10
   healValue: 15
   posX: 0
   posY: 0
@@ -615,6 +616,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 0}
+--- !u!114 &3222516403796345502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2192574507708775241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3bc5e77e9486ad44bbf50bbc14add04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2192595258990520593
 GameObject:
   m_ObjectHideFlags: 0

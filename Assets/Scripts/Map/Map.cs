@@ -110,7 +110,7 @@ public class Map : MonoBehaviour
         return GameObject.Find("Hex_" + x + "_" + y).transform.position + new Vector3(0, yOffset, 0);
     }
 
-    public void GeneratePathTo(int x, int y) { // Dijkstra algorithm
+    public int GeneratePathTo(int x, int y) { // Dijkstra algorithm
         ClearCurrentPath();
         
         Dictionary<Node, float> dist = new Dictionary<Node, float>();
@@ -159,12 +159,12 @@ public class Map : MonoBehaviour
                 }
             }
         }
-        // If we get here, either we found the shortest route to our target, or there is no route at all
-        if(dist[target] == null) {
-            // No route to our target and the source
-            Debug.Log("Error: There is no route to our target from the source");
-            return;
-        }
+        // // If we get here, either we found the shortest route to our target, or there is no route at all
+        // if(dist[target] == null) {
+        //     // No route to our target and the source
+        //     Debug.Log("Error: There is no route to our target from the source");
+        //     return;
+        // }
 
         currentPath = new List<Node>();
         Node curr = target;
@@ -178,12 +178,29 @@ public class Map : MonoBehaviour
         currentPath.Reverse();
         currentPath.RemoveAt(0);
 
+        return currentPath.Count;
+    }
+
+    public void PaintShortestPath() {
         if(currentPath.Count <= GetActiveUnit().movementPoints && !GetActiveUnit().isMoving) {
             foreach(Node v in currentPath) {
                 MeshRenderer mr = GameObject.Find("Hex_" + v.x + "_" + v.y).GetComponentInChildren<MeshRenderer>();
                 mr.material.color = Color.green;
             }
         }
+    }
+
+    public bool ShortenCurrentPath(int MP) {
+        // Target is close enough to reach it
+        if(currentPath.Count <= MP+1) {
+            currentPath.RemoveAt(currentPath.Count-1);
+            return true;
+        }
+
+        // Target too far, just get closer
+        else 
+            currentPath.RemoveRange(MP, currentPath.Count-MP);
+            return false;
     }
 
     public void ClearCurrentPath() {

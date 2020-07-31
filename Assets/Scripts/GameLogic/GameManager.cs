@@ -10,9 +10,9 @@ public class GameManager : MonoBehaviour
     
     [Header("Players")]
     private UnitManager[] unitList;
-    public int activeUnit = 0;
     public GameObject unitParent;
 
+    public int activeUnit = 0;
     public int activeSkill = 0;
 
     private void Awake() {
@@ -26,9 +26,43 @@ public class GameManager : MonoBehaviour
         InitializeUnitList();
     }
 
+    public int GetUnitId(UnitManager unit) {
+        int cnt = 0;
+        foreach(UnitManager u in unitList) {
+            if(u.Equals(unit))
+                return cnt;
+            cnt++;
+        }
+
+        return -1;
+    }
 
     public UnitManager GetActiveUnit() {
         return unitList[activeUnit];
+    }
+
+    public List<UnitManager> GetPlayableUnitsList() {
+        List<UnitManager> list = new List<UnitManager>();
+
+        foreach(UnitManager u in unitList) {
+            if(u.IsPlayable()) {
+                list.Add(u);
+            }
+        }
+
+        return list;
+    }
+
+    public List<UnitManager> GetEnemyUnitsList() {
+        List<UnitManager> list = new List<UnitManager>();
+        
+        foreach(UnitManager u in unitList) {
+            if(!u.IsPlayable()) {
+                list.Add(u);
+            }
+        }
+
+        return list;
     }
 
     void InitializeUnitList() {
@@ -45,6 +79,10 @@ public class GameManager : MonoBehaviour
             activeUnit++;
 
         unitList[activeUnit].InitializeTurn();
+        UI.instance.UpdateIconList();
+
+        if(!unitList[activeUnit].IsPlayable())
+            StartCoroutine(unitList[activeUnit].GetComponent<EnemyAI>().StartingTurn());
     }
 
     public UnitManager UnitOnTile(Tile tile) {
